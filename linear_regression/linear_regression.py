@@ -16,8 +16,8 @@ class Model(torch.nn.Module):
 model = Model()
 
 #hyper-parameters
-criterion = torch.nn.MSELoss(reduction='sum')
 learning_rate = 0.01
+criterion = torch.nn.MSELoss(reduction='sum')
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 num_epochs = 200
 
@@ -26,11 +26,11 @@ num_epochs = 200
 for epoch in range(num_epochs):
     y_pred = model(x_data)
     loss = criterion(y_pred, y_data)
-    print(epoch, loss.data.item())
 
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
+
 
 # after training
 hour_var = Variable(torch.Tensor([4.0]))
