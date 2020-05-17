@@ -4,7 +4,7 @@ from torch.autograd import Variable
 x_data = [1.0, 2.0, 3.0]
 y_data = [3.0, 6.0, 9.0]
 
-w = Variable(torch.Tensor([1.0]), requires_grad = True)
+w = Variable(torch.Tensor([1.0]), requires_grad=True)
 
 def forward(x):
     return x * w

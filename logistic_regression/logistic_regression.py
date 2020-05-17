@@ -34,6 +34,6 @@ for epoch in range(num_epochs):
     optimizer.step()
 
 hour_var = Variable(torch.Tensor([[1.0]]))
-print('predict 1 hour ', 2.0, model(hour_var).data[0][0])
+print('predict 1 hour ', model(hour_var).data[0][0])
 hour_var = Variable(torch.Tensor([[7.0]]))
-print('predict 7 hour ', 7.0, model(hour_var).data[0][0])
+print('predict 7 hour ', model(hour_var).data[0][0])
