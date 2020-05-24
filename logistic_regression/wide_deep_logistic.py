@@ -1,10 +1,28 @@
 import torch
 import numpy as np
 from torch.autograd import Variable
+from torch.utils.data import Dataset, DataLoader
 
-xy = np.loadtxt('diabetes.csv', delimiter=',', dtype=np.float32)
-x_data = Variable(torch.from_numpy(xy[:, 0:-1]))
-y_data = Variable(torch.from_numpy(xy[:, [-1]]))
+
+class DiabetesDataset(Dataset):
+    def __init__(self):
+        xy = np.loadtxt('diabetes.csv', delimiter=',', dtype=np.float32)
+        self.len = xy.shape[0]
+        self.x_data = Variable(torch.from_numpy(xy[:, 0:-1]))
+        self.y_data = Variable(torch.from_numpy(xy[:, [-1]]))
+
+    def __getitem__(self, index):
+        return self.x_data[index], self.y_data[index]
+
+    def __len__(self):
+        return self.len
+
+dataset = DiabetesDataset()
+train_loader = DataLoader(dataset=dataset,
+                        batch_size=32,
+                        shuffle=True,
+                        num_workers=2)
+
 
 class Model(torch.nn.Module):
     def __init__(self):
@@ -23,15 +41,19 @@ class Model(torch.nn.Module):
 
 model = Model()
 
+
 criterion = torch.nn.BCELoss(reduction='mean')
 optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
-for epoch in range(100):
-    y_pred = model(x_data)
+for epoch in range(2):
+    for i, data in enumerate(train_loader, 0):
+        inputs, labels = data
+        inputs, labels = Variable(inputs), Variable(labels)
+        y_pred = model(inputs)
 
-    loss = criterion(y_pred, y_data)
-    print(epoch, loss.data)
+        loss = criterion(y_pred, labels)
+        print(epoch, i, loss.data)
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
